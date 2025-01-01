@@ -69,8 +69,12 @@ function handleListClick(event) {
     listItem.classList.toggle('completed');
     updateLocalTodos();
   } else if (target.classList.contains('delete-btn')) {
-    todoList.removeChild(listItem);
-    updateLocalTodos();
+    // **Add confirmation prompt before deleting**
+    const confirmed = confirm('Are you sure you want to delete this task?');
+    if (confirmed) {
+      todoList.removeChild(listItem);
+      updateLocalTodos();
+    }
   }
 }
 
