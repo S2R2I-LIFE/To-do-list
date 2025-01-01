@@ -1,5 +1,33 @@
-/* Basic Reset */
-* {
+/* styles.css */
+
+/* Light Theme Variables */
+:root {
+    --background-color: #f0f0f0;
+    --text-color: #333;
+    --container-background: #fff;
+    --input-background: #fff;
+    --button-background: #e7e7e7;
+    --button-text-color: #333;
+    --button-hover-background: #ddd;
+    --completed-task-color: #888;
+    --completed-task-decoration: line-through;
+  }
+  
+  /* Dark Theme Variables */
+  .dark-theme {
+    --background-color: #121212;
+    --text-color: #f0f0f0;
+    --container-background: #1e1e1e;
+    --input-background: #1e1e1e;
+    --button-background: #2c2c2c;
+    --button-text-color: #f0f0f0;
+    --button-hover-background: #333;
+    --completed-task-color: #777;
+    --completed-task-decoration: line-through;
+  }
+  
+  /* Basic Reset */
+  * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -8,7 +36,9 @@
   /* Body Styling */
   body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    position: relative;
   }
   
   /* Container */
@@ -16,9 +46,10 @@
     width: 100%;
     max-width: 500px;
     margin: 80px auto;
-    background-color: #fff;
+    background-color: var(--container-background);
     padding: 20px;
     border-radius: 5px;
+    position: relative;
   }
   
   /* Heading */
@@ -36,69 +67,86 @@
     flex: 1;
     padding: 10px;
     font-size: 16px;
+    background-color: var(--input-background);
+    color: var(--text-color);
+    border: 1px solid var(--button-background);
+    border-radius: 5px;
   }
   
   #todo-form button {
     padding: 0 20px;
     font-size: 16px;
     cursor: pointer;
+    background-color: var(--button-background);
+    color: var(--button-text-color);
+    border: none;
+    margin-left: 10px;
+    border-radius: 5px;
   }
-
-  /* Animation for adding tasks */
-  @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  
+  #todo-form button:hover {
+    background-color: var(--button-hover-background);
   }
-
+  
   /* To-Do List */
-  #todo-list {.
+  #todo-list {
     list-style-type: none;
     margin-top: 20px;
   }
   
   #todo-list li {
-    background-color: #fafafa;
+    background-color: var(--input-background);
+    color: var(--text-color);
     padding: 10px;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    animation: fadeIn 0.5s;
+    border-radius: 5px;
   }
   
-  /* Animation for removing tasks */
-  .removed {
-    animation: fadeOut 0.5s forwards;
-  }
-  
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; height: 0; margin: 0; padding: 0; }
-  }
-
   #todo-list li.completed span {
-    text-decoration: line-through;
-    color: #888;
+    text-decoration: var(--completed-task-decoration);
+    color: var(--completed-task-color);
   }
   
   /* Buttons */
   button.complete-btn,
   button.delete-btn {
+    cursor: pointer;
+    background: none;
+    border: none;
     font-size: 16px;
+    margin-left: 10px;
   }
   
-  button.complete-btn i {
+  button.complete-btn {
     color: green;
   }
   
-  button.delete-btn i {
+  button.delete-btn {
     color: red;
   }
-
-  /* ... existing styles ... */
-
-/* Responsive Design */
-@media (max-width: 600px) {
+  
+  /* Theme Toggle Button */
+  .theme-toggle-btn {
+    position: absolute;
+    top: -60px; /* Adjust as needed */
+    right: 0;
+    background-color: var(--button-background);
+    color: var(--button-text-color);
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .theme-toggle-btn:hover {
+    background-color: var(--button-hover-background);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 600px) {
     .container {
       margin: 20px;
     }
@@ -109,6 +157,13 @@
   
     #todo-form button {
       width: 100%;
+      margin-left: 0;
       margin-top: 10px;
+    }
+  
+    /* Adjust theme toggle button position */
+    .theme-toggle-btn {
+      position: static;
+      margin-bottom: 20px;
     }
   }

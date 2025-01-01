@@ -1,11 +1,25 @@
+// app.js
+
 // Selectors
 const todoForm = document.querySelector('#todo-form');
 const todoInput = document.querySelector('#todo-input');
 const todoList = document.querySelector('#todo-list');
+const themeToggleBtn = document.querySelector('#theme-toggle');
 
 // Event Listeners
 todoForm.addEventListener('submit', addTodo);
 todoList.addEventListener('click', handleListClick);
+themeToggleBtn.addEventListener('click', toggleTheme);
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadTodos();
+
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+    themeToggleBtn.textContent = 'Switch to Light Theme';
+  }
+});
 
 // Functions
 
@@ -21,12 +35,12 @@ function addTodo(event) {
 
   // Create Complete Button
   const completeBtn = document.createElement('button');
-  completeBtn.innerHTML = '<i class="fas fa-check"></i>';
+  completeBtn.innerHTML = '👍';
   completeBtn.classList.add('complete-btn');
 
   // Create Delete Button
   const deleteBtn = document.createElement('button');
-  deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+  deleteBtn.innerHTML = '❌';
   deleteBtn.classList.add('delete-btn');
 
   // Append elements
@@ -35,38 +49,49 @@ function addTodo(event) {
   li.appendChild(deleteBtn);
   todoList.appendChild(li);
 
+  // Save to localStorage
+  saveLocalTodos(todoInput.value, false);
+
   // Clear input
   todoInput.value = '';
-
-  // Save todo
-  saveLocalTodos(todoInput.value);
 }
 
 function handleListClick(event) {
-    // ... existing code ...
-  
-    if (target.classList.contains('complete-btn')) {
-      // ... existing code ...
-      updateLocalTodos();
-    } else if (target.classList.contains('delete-btn')) {
-      // ... existing code ...
-      updateLocalTodos();
-    }
-  }
-  
-  function updateLocalTodos() {
-    let todos = [];
-    document.querySelectorAll('#todo-list li').forEach((li) => {
-      const text = li.querySelector('span').textContent;
-      const completed = li.classList.contains('completed');
-      todos.push({ text, completed });
-    });
-    localStorage.setItem('todos', JSON.stringify(todos));
+  let target = event.target;
+
+  if (target.tagName === 'I') {
+    target = target.parentElement;
   }
 
-function saveLocalTodos(todo) {
+  const listItem = target.parentElement;
+
+  if (target.classList.contains('complete-btn')) {
+    listItem.classList.toggle('completed');
+    updateLocalTodos();
+  } else if (target.classList.contains('delete-btn')) {
+    todoList.removeChild(listItem);
+    updateLocalTodos();
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-theme');
+
+  // Save preference to localStorage
+  if (document.body.classList.contains('dark-theme')) {
+    themeToggleBtn.textContent = 'Switch to Light Theme';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    themeToggleBtn.textContent = 'Switch to Dark Theme';
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+// Local Storage Functions
+
+function saveLocalTodos(todoText, completed) {
   let todos = getLocalTodos();
-  todos.push({ text: todo, completed: false });
+  todos.push({ text: todoText, completed: completed });
   localStorage.setItem('todos', JSON.stringify(todos));
 }
 
@@ -77,12 +102,40 @@ function getLocalTodos() {
 function loadTodos() {
   let todos = getLocalTodos();
   todos.forEach((todo) => {
-    // Create list item as before using todo.text and todo.completed
-    // Add logic to mark as completed if todo.completed is true
+    // Create list item
+    const li = document.createElement('li');
+    if (todo.completed) {
+      li.classList.add('completed');
+    }
+
+    // Create span for text
+    const span = document.createElement('span');
+    span.textContent = todo.text;
+
+    // Create Complete Button
+    const completeBtn = document.createElement('button');
+    completeBtn.innerHTML = '👍';
+    completeBtn.classList.add('complete-btn');
+
+    // Create Delete Button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.innerHTML = '❌';
+    deleteBtn.classList.add('delete-btn');
+
+    // Append elements
+    li.appendChild(span);
+    li.appendChild(completeBtn);
+    li.appendChild(deleteBtn);
+    todoList.appendChild(li);
   });
 }
 
-// Call loadTodos on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-  loadTodos();
-});
+function updateLocalTodos() {
+  let todos = [];
+  document.querySelectorAll('#todo-list li').forEach((li) => {
+    const text = li.querySelector('span').textContent;
+    const completed = li.classList.contains('completed');
+    todos.push({ text, completed });
+  });
+  localStorage.setItem('todos', JSON.stringify(todos));
+}
